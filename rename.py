@@ -3,6 +3,7 @@
 from os import listdir
 from os import rename
 import shutil
+import random 
 
 # Clase principal
 class AcomodoCanciones:
@@ -14,7 +15,7 @@ class AcomodoCanciones:
     cantidadSpots = 1
     enumerar = False
 # variables globales
-separador = "-------------------------------------------------------"
+separador = "----------------------------------------------------------------------"
 salir = False
 playlist = AcomodoCanciones()
 
@@ -40,14 +41,25 @@ def cambiarSpots():
         spotnombre = input("ingrese el nombre del spot " + str(n+1) + " (debe incluir el formato de archivo):")
         playlist.lista.append(spotnombre)
         n = n+1
+def aleatorizar():
+    listaCan = listdir(playlist.dirMus)
+    random.shuffle(listaCan)
+    n = 0
+    for cancion in listaCan:
+        nombrealeatorizado = str(f'{n:03}') + cancion
+        rename(playlist.dirMus+cancion, playlist.dirMus + nombrealeatorizado)
+        print(nombrealeatorizado)
+        n = n + 1
+
 def cambiarEnumerar():
     playlist.enumerar = not playlist.enumerar
 def generar():
     print("generando lista en " + str(playlist.nuevoDir))
-    print(playlist.lista[0] + " - " + playlist.lista[1])
     spotActual = 1
     listaCan = listdir(playlist.dirMus)
+    n = 0
     for cancion in listaCan:
+        enum = 0
         nombreCancion = cancion[:-4]
         caracteres = len(nombreCancion)
         caracteresSobrantes = caracteres - playlist.maxCaracteres
@@ -59,8 +71,14 @@ def generar():
         print(nuevoNombre)
         print(playlist.nuevoDir+nombreCancion+playlist.separadorSpot+playlist.lista[spotActual-1] + " --- " +str(spotActual))
         rename(playlist.dirMus+cancion, playlist.dirMus+nuevoNombre)
-        shutil.copyfile(playlist.lista[spotActual-1], playlist.nuevoDir+nombreCancion+playlist.separadorSpot+playlist.lista[spotActual-1])
-        shutil.copyfile(playlist.dirMus+nuevoNombre, playlist.nuevoDir+nuevoNombre)
+        if playlist.enumerar:
+            shutil.copyfile(playlist.lista[spotActual-1], playlist.nuevoDir + str(f'{n:03}') + playlist.separadorSpot + playlist.lista[spotActual-1])
+            n = n + 1
+            shutil.copyfile(playlist.dirMus+nuevoNombre, playlist.nuevoDir + str(f'{n:03}') + ".mp3")
+            n = n + 1
+        else :
+            shutil.copyfile(playlist.lista[spotActual-1], playlist.nuevoDir+nombreCancion+playlist.separadorSpot+playlist.lista[spotActual-1])
+            shutil.copyfile(playlist.dirMus+nuevoNombre, playlist.nuevoDir+nuevoNombre)
         if spotActual == len(playlist.lista):
             spotActual = 1
         else:
@@ -77,9 +95,10 @@ while not salir:
     print("3) Cambiar separador - " + playlist.separadorSpot)
     print("4) Cambiar caracterres Máximos - " + str(playlist.maxCaracteres))
     print("5) Cambiar spots - " + str(playlist.cantidadSpots))
-    print("6) Cambiar enumerar - " + enumerar)
-    print("7) Generar")
-    print("8) Salir")
+    print("6) Aleatorizar directorio Origen - no se puede deshacer")
+    print("7) Cambiar enumerar (borrar el nombre) - " + enumerar)
+    print("8) Generar")
+    print("9) Salir")
     print(separador)
 
     opc = input("seleccione una opción: ")
@@ -95,10 +114,12 @@ while not salir:
     elif (opc=="5"):
         cambiarSpots()
     elif (opc=="6"):
-        cambiarEnumerar()
+        aleatorizar()
     elif (opc=="7"):
-        generar()
+        cambiarEnumerar()
     elif (opc=="8"):
+        generar()
+    elif (opc=="9"):
         salir = True
         break
         
