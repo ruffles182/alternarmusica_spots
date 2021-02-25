@@ -4,7 +4,8 @@ from os import listdir
 from os import rename
 import shutil
 
-class acomodoCanciones:
+# Clase principal
+class AcomodoCanciones:
     nuevoDir = "testNuevo/"
     dirMus = "Música Joinet/"
     separadorSpot = " ---- "
@@ -12,11 +13,12 @@ class acomodoCanciones:
     lista = []
     cantidadSpots = 1
     enumerar = False
-
+# variables globales
 separador = "-------------------------------------------------------"
 salir = False
-playlist = acomodoCanciones()
+playlist = AcomodoCanciones()
 
+# Funciones
 def cambiarDirdest():
     respNewDir = input("nombre de la carpeta destino (debe estár vacia): ")
     playlist.nuevoDir = respNewDir + "/"
@@ -64,7 +66,7 @@ def generar():
         else:
             spotActual = spotActual + 1
 
-
+# interface
 while not salir:
     enumerar = "Sí" if playlist.enumerar else "No"
     print(separador)
